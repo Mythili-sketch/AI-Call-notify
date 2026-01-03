@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Call Notify</title>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #0f172a;
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+    .card {
+        background: #111827;
+        padding: 28px;
+        border-radius: 18px;
+        width: 360px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        text-align: center;
+    }
+    h1, h2 { margin-bottom: 15px; }
+    button {
+        width: 100%;
+        padding: 12px;
+        border-radius: 10px;
+        border: none;
+        margin-top: 12px;
+        font-size: 16px;
+        cursor: pointer;
+        background: #4f46e5;
+        color: white;
+    }
+    button:hover { opacity: .9; }
+    input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 8px;
+        border: none;
+        margin-top: 10px;
+    }
+    .option-box {
+        text-align: left;
+        background:#020617;
+        padding:12px;
+        border-radius:12px;
+        margin-top:10px;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+    <!-- Page 1 -->
+    <div id="page1">
+        <h1>Welcome to AI Call Notify</h1>
+        <button onclick="nextPage(2)">Continue</button>
+    </div>
+
+    <!-- Page 2 -->
+    <div id="page2" style="display:none;">
+        <h2>Enter the Phone Number</h2>
+        <input type="tel" id="phone" placeholder="Enter phone number" />
+        <button onclick="nextPage(3)">Next</button>
+    </div>
+
+    <!-- Page 3 -->
+    <div id="page3" style="display:none;">
+        <h2>Select an Option</h2>
+
+        <div class="option-box">
+            <label><input type="radio" name="option" value="Notification"> Notification</label><br><br>
+            <label><input type="radio" name="option" value="Call"> Call</label><br><br>
+            <label><input type="radio" name="option" value="Both"> nofication & Call </label>
+        </div>
+
+        <button onclick="submitForm()">Submit</button>
+    </div>
+
+</div>
+<script>
+function nextPage(page) {
+    document.getElementById("page1").style.display = "none";
+    document.getElementById("page2").style.display = "none";
+    document.getElementById("page3").style.display = "none";
+    document.getElementById("page" + page).style.display = "block";
+}
+
+function submitForm() {
+    const phone = document.getElementById("phone").value;
+    const option = document.querySelector('input[name="option"]:checked');
+
+    if (!phone) return alert("Please enter phone number");
+    if (!option) return alert("Please select an option");
+
+    alert("Phone: " + phone + "\nSelected: " + option.value);
+}
+</script>
+
+</body>
+</html>
+

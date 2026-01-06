@@ -18,7 +18,6 @@ body{
   margin:0;
 }
 
-/* Glass Card */
 .card{
   background:rgba(17,24,39,.85);
   backdrop-filter:blur(12px);
@@ -31,19 +30,10 @@ body{
 }
 @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}}
 
-/* Top Bar */
-.lang-bar{
-  display:flex;justify-content:space-between;align-items:center;
-  margin-bottom:6px;
-}
-#titleTop{
-  font-size:18px;
-  font-weight:600;
-  letter-spacing:.4px;
-}
+.lang-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+#titleTop{font-size:18px;font-weight:600;letter-spacing:.4px}
 
-/* Elements */
-select,input,button{
+select,input,button,textarea{
   width:100%;
   padding:11px;
   border-radius:12px;
@@ -52,48 +42,34 @@ select,input,button{
   color:white;
   margin-top:12px;
 }
-input::placeholder{color:#7c84a6}
+input::placeholder,textarea::placeholder{color:#7c84a6}
+textarea{min-height:110px;resize:none}
 
-/* Buttons */
 button{
   background:linear-gradient(120deg,#6366f1,#8b5cf6);
-  border:none;
-  font-size:16px;
-  font-weight:600;
-  cursor:pointer;
-  transition:.2s;
+  border:none;font-size:16px;font-weight:600;
+  cursor:pointer;transition:.2s;
 }
 button:hover{transform:translateY(-1px);box-shadow:0 10px 20px rgba(99,102,241,.35)}
 button:active{transform:scale(.98)}
 
-/* Layout helpers */
 .row{display:flex;gap:10px}
 .error{color:#fca5a5;font-size:13px;margin-top:6px}
 
-/* Option Tiles */
 .option-grid{display:grid;gap:10px;margin-top:12px}
 .option-card{
-  background:#020617;
-  padding:14px;
-  border-radius:14px;
-  cursor:pointer;
-  border:1px solid rgba(255,255,255,.15);
-  transition:.25s;
+  background:#020617;padding:14px;border-radius:14px;cursor:pointer;
+  border:1px solid rgba(255,255,255,.15);transition:.25s;
 }
 .option-card:hover{border-color:#818cf8;background:#020617d9}
-.option-card.selected{
-  border-color:#818cf8;
-  box-shadow:0 0 0 1px #6366f1,0 10px 20px rgba(99,102,241,.25);
-}
+.option-card.selected{border-color:#818cf8;
+  box-shadow:0 0 0 1px #6366f1,0 10px 20px rgba(99,102,241,.25)}
 .option-title{font-weight:600;margin-bottom:4px}
-.icon{
-  font-size:18px;
-  margin-right:6px;
-  opacity:.9;
-}
+.icon{font-size:18px;margin-right:6px;opacity:.9}
 
-/* Page transition */
 .page{animation:fadeIn .35s ease}
+.smallNote{opacity:.7;font-size:12px;margin-top:4px}
+.counter{font-size:12px;opacity:.7;text-align:right;margin-top:4px}
 </style>
 </head>
 
@@ -103,7 +79,6 @@ button:active{transform:scale(.98)}
 
 <div class="lang-bar">
   <strong id="titleTop">AI Call Notify</strong>
-
   <select id="lang" onchange="setLanguage(this.value)">
     <option value="en">English</option>
     <option value="ta">தமிழ்</option>
@@ -132,8 +107,7 @@ button:active{transform:scale(.98)}
       <option value="+61">+61 (Australia)</option>
       <option value="+971">+971 (UAE)</option>
     </select>
-
-    <input type="tel" id="phone" maxlength="10" placeholder="10-digit number" />
+    <input type="tel" id="phone" maxlength="10" placeholder="10-digit number"/>
   </div>
 
   <div id="phoneError" class="error"></div>
@@ -146,29 +120,51 @@ button:active{transform:scale(.98)}
 
   <div class="option-grid">
     <div class="option-card" onclick="selectOption('Notification',event)">
-      <div class="option-title">
-        <span class="icon">🔔</span><span id="optNotify">Notification Only</span>
-      </div>
+      <div class="option-title"><span class="icon">🔔</span>
+        <span id="optNotify">Notification Only</span></div>
       <small id="optNotifySub">Send alert notification</small>
     </div>
 
     <div class="option-card" onclick="selectOption('Call',event)">
-      <div class="option-title">
-        <span class="icon">📞</span><span id="optCall">Call Only</span>
-      </div>
+      <div class="option-title"><span class="icon">📞</span>
+        <span id="optCall">Call Only</span></div>
       <small id="optCallSub">Trigger phone call alert</small>
     </div>
 
     <div class="option-card" onclick="selectOption('Both',event)">
-      <div class="option-title">
-        <span class="icon">⚡</span><span id="optBoth">Notification + Call</span>
-      </div>
+      <div class="option-title"><span class="icon">⚡</span>
+        <span id="optBoth">Notification + Call</span></div>
       <small id="optBothSub">Get both alerts</small>
     </div>
   </div>
 
   <div id="optionError" class="error"></div>
-  <button onclick="submitForm()" id="submitBtn">Submit</button>
+  <button onclick="goSchedule()" id="submitBtn">Continue</button>
+</div>
+
+<!-- Page 4 : Schedule + Message -->
+<div id="page4" class="page" style="display:none;">
+  <h2 id="scheduleTitle">Schedule Alert</h2>
+
+  <label id="dateLabel">Select Date</label>
+  <input type="date" id="alertDate"/>
+
+  <label id="timeLabel">Select Time</label>
+  <div class="row">
+    <input type="time" id="alertTime">
+    <select id="ampm">
+      <option value="AM">AM</option>
+      <option value="PM">PM</option>
+    </select>
+  </div>
+
+  <label id="msgLabel" style="margin-top:14px;">Message / Script (500 letters)</label>
+  <textarea id="alertMsg" maxlength="500"
+    placeholder="Type the message that should be spoken or shown..."></textarea>
+  <div class="counter"><span id="msgCount">0</span>/500</div>
+
+  <div id="scheduleError" class="error"></div>
+  <button onclick="finalSubmit()" id="finalBtn">Submit</button>
 </div>
 
 </div>
@@ -176,128 +172,109 @@ button:active{transform:scale(.98)}
 <script>
 let selectedOption=null;
 
-/* ---------- LANGUAGE TEXTS ---------- */
+/* TEXTS */
 const texts={
-  en:{
-    titleTop:"AI Call Notify",
-    welcome:"Welcome to AI Call Notify",
-    subWelcome:"Smart alerts for calls & notifications",
-    continue:"Continue",
-    enterPhone:"Enter Phone Number",
-    next:"Next",
-    selectMode:"Select Alert Mode",
-    optNotify:"Notification Only",
-    optNotifySub:"Send alert notification",
-    optCall:"Call Only",
-    optCallSub:"Trigger phone call alert",
-    optBoth:"Notification + Call",
-    optBothSub:"Get both alerts",
-    submit:"Submit",
-    phoneError:"Please enter a valid 10-digit phone number",
-    optionError:"Please select an alert mode"
-  },
-  ta:{
-    titleTop:"AI Call Notify",
-    welcome:"AI Call Notify-க்கு வரவேற்கிறோம்",
-    subWelcome:"கால்களும் நோட்டிபிகேஷன்களுக்கும் ஸ்மார்ட் அலர்ட்",
-    continue:"தொடரவும்",
-    enterPhone:"தொலைபேசி எண்ணை உள்ளிடவும்",
-    next:"அடுத்து",
-    selectMode:"அலர்ட் வகையைத் தேர்வு செய்யவும்",
-    optNotify:"நோட்டிபிகேஷன் மட்டும்",
-    optNotifySub:"அலர்ட் நோட்டீஸ் அனுப்பு",
-    optCall:"கால் மட்டும்",
-    optCallSub:"அலர்ட் கால் செய்",
-    optBoth:"நோட்டிபிகேஷன் + கால்",
-    optBothSub:"இரண்டும் பெறவும்",
-    submit:"சமர்ப்பிக்கவும்",
-    phoneError:"சரியான 10 இலக்க எண்ணை உள்ளிடவும்",
-    optionError:"தயவுசெய்து ஒரு அலர்ட் வகையைத் தேர்வு செய்யவும்"
-  },
-  hi:{
-    titleTop:"AI Call Notify",
-    welcome:"AI Call Notify में आपका स्वागत है",
-    subWelcome:"कॉल और नोटिफिकेशन के लिए स्मार्ट अलर्ट",
-    continue:"आगे बढ़ें",
-    enterPhone:"फोन नंबर दर्ज करें",
-    next:"अगला",
-    selectMode:"अलर्ट मोड चुनें",
-    optNotify:"केवल नोटिफिकेशन",
-    optNotifySub:"अलर्ट नोटिफिकेशन भेजें",
-    optCall:"केवल कॉल",
-    optCallSub:"अलर्ट कॉल ट्रिगर करें",
-    optBoth:"नोटिफिकेशन + कॉल",
-    optBothSub:"दोनों अलर्ट प्राप्त करें",
-    submit:"सबमिट करें",
-    phoneError:"कृपया 10 अंकों का सही फोन नंबर दर्ज करें",
-    optionError:"कृपया एक अलर्ट मोड चुनें"
-  }
+  en:{schedule:"Schedule Alert",date:"Select Date",time:"Select Time",
+      msg:"Message / Script (500 letters)",final:"Submit",
+      phoneError:"Please enter a valid 10-digit phone number",
+      optionError:"Please select an alert mode",
+      scheduleError:"Please fill date, time and message"},
+  ta:{schedule:"அலர்ட் அட்டவணை அமைக்க",
+      date:"தேதியை தேர்வு செய்யவும்",
+      time:"நேரத்தை தேர்வு செய்யவும்",
+      msg:"செய்தி / உரை (500 எழுத்துகள்)",
+      final:"சமர்ப்பிக்கவும்",
+      phoneError:"சரியான 10 இலக்க எண்ணை உள்ளிடவும்",
+      optionError:"தயவுசெய்து ஒரு அலர்ட் வகையைத் தேர்வு செய்யவும்",
+      scheduleError:"தேதி, நேரம், செய்தி ஆகியவற்றை நிரப்பவும்"},
+  hi:{schedule:"अलर्ट शेड्यूल करें",
+      date:"तारीख चुनें",
+      time:"समय चुनें",
+      msg:"संदेश / स्क्रिप्ट (500 अक्षर)",
+      final:"सबमिट करें",
+      phoneError:"कृपया सही 10 अंकों का नंबर दर्ज करें",
+      optionError:"कृपया एक अलर्ट मोड चुनें",
+      scheduleError:"कृपया तारीख, समय और संदेश भरें"}
 };
 
+/* language update for new page */
 function setLanguage(lang){
   const t=texts[lang];
-  document.getElementById("titleTop").innerText=t.titleTop;
-  document.getElementById("welcomeText").innerText=t.welcome;
-  document.getElementById("subWelcome").innerText=t.subWelcome;
-  document.getElementById("continueBtn").innerText=t.continue;
-  document.getElementById("enterPhoneText").innerText=t.enterPhone;
-  document.getElementById("nextBtn").innerText=t.next;
-  document.getElementById("selectModeText").innerText=t.selectMode;
-  document.getElementById("optNotify").innerText=t.optNotify;
-  document.getElementById("optNotifySub").innerText=t.optNotifySub;
-  document.getElementById("optCall").innerText=t.optCall;
-  document.getElementById("optCallSub").innerText=t.optCallSub;
-  document.getElementById("optBoth").innerText=t.optBoth;
-  document.getElementById("optBothSub").innerText=t.optBothSub;
-  document.getElementById("submitBtn").innerText=t.submit;
+  document.getElementById("scheduleTitle").innerText=t.schedule;
+  document.getElementById("dateLabel").innerText=t.date;
+  document.getElementById("timeLabel").innerText=t.time;
+  document.getElementById("msgLabel").innerText=t.msg;
+  document.getElementById("finalBtn").innerText=t.final;
 }
 
-/* ---------- PAGE SWITCH ---------- */
+/* page switch */
 function nextPage(n){
-  ["page1","page2","page3"].forEach(id=>{
-    document.getElementById(id).style.display="none";
-  });
+  ["page1","page2","page3","page4"]
+    .forEach(id=>document.getElementById(id).style.display="none");
   document.getElementById("page"+n).style.display="block";
 }
 
-/* ---------- PHONE VALIDATION ---------- */
+/* validation */
 function validatePhone(){
   const phone=document.getElementById("phone").value.trim();
   const lang=document.getElementById("lang").value;
-  const err=document.getElementById("phoneError");
-
   if(!/^[0-9]{10}$/.test(phone)){
-    err.innerText=texts[lang].phoneError;
+    document.getElementById("phoneError").innerText=texts[lang].phoneError;
     return;
   }
-  err.innerText="";
+  document.getElementById("phoneError").innerText="";
   nextPage(3);
 }
 
-/* ---------- OPTION SELECT ---------- */
 function selectOption(opt,e){
   selectedOption=opt;
   document.querySelectorAll(".option-card").forEach(c=>c.classList.remove("selected"));
   e.currentTarget.classList.add("selected");
 }
 
-/* ---------- SUBMIT ---------- */
-function submitForm(){
+function goSchedule(){
   const lang=document.getElementById("lang").value;
-  const optionErr=document.getElementById("optionError");
-
   if(!selectedOption){
-    optionErr.innerText=texts[lang].optionError;
+    document.getElementById("optionError").innerText=texts[lang].optionError;
     return;
   }
+  document.getElementById("optionError").innerText="";
+  nextPage(4);
+}
 
-  optionErr.innerText="";
+/* message counter */
+document.getElementById("alertMsg").addEventListener("input",e=>{
+  document.getElementById("msgCount").innerText=e.target.value.length;
+});
+
+/* final submit */
+function finalSubmit(){
+  const lang=document.getElementById("lang").value;
+  const date=document.getElementById("alertDate").value;
+  const time=document.getElementById("alertTime").value;
+  const ampm=document.getElementById("ampm").value;
+  const msg=document.getElementById("alertMsg").value.trim();
+
+  if(!date || !time || msg.length===0){
+    document.getElementById("scheduleError").innerText=texts[lang].scheduleError;
+    return;
+  }
+  document.getElementById("scheduleError").innerText="";
+
   const code=document.getElementById("countryCode").value;
   const phone=document.getElementById("phone").value.trim();
 
-  alert("Phone: "+code+" "+phone+"\nSelected Mode: "+selectedOption);
+  alert(
+    "Scheduled Successfully!\n\n"+
+    "Phone : "+code+" "+phone+
+    "\nMode : "+selectedOption+
+    "\nDate : "+date+
+    "\nTime : "+time+" "+ampm+
+    "\nMessage : "+msg
+  );
 }
 
+/* default language */
 setLanguage("en");
 </script>
 
